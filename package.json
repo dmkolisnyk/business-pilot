@@ -1,0 +1,22 @@
+{
+  "name": "business-pilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Business Pilot monorepo for WooCommerce-first ecommerce analytics SaaS.",
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/web --filter ./apps/api dev",
+    "dev:web": "pnpm --filter ./apps/web dev",
+    "dev:api": "pnpm --filter ./apps/api start:dev",
+    "build": "pnpm -r build",
+    "build:web": "pnpm --filter ./apps/web build",
+    "build:api": "pnpm --filter ./apps/api build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@11.8.0"
+}
