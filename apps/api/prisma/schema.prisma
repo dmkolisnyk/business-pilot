@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrganizationRole {
+  owner
+  admin
+  member
+}
+
+enum IntegrationProvider {
+  woocommerce
+}
+
+enum IntegrationStatus {
+  pending
+  connected
+  failed
+  disconnected
+}
+
+enum SyncJobType {
+  initial_sync
+  incremental_sync
+  manual_sync
+  webhook_sync
+}
+
+enum SyncJobStatus {
+  pending
+  running
+  completed
+  failed
+  cancelled
+  partial
+}
+
+enum SyncLogLevel {
+  info
+  warning
+  error
+}
+
+enum SyncResourceType {
+  orders
+  customers
+  products
+  refunds
+  coupons
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  name         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  memberships OrganizationMember[]
+
+  @@map("users")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  members                OrganizationMember[]
+  integrations           Integration[]
+  woocommerceConnections WooCommerceConnection[]
+  integrationCredentials IntegrationCredential[]
+  syncJobs               SyncJob[]
+  syncLogs               SyncLog[]
+  syncCursors            SyncCursor[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String           @map("organization_id")
+  userId         String           @map("user_id")
+  role           OrganizationRole @default(member)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_members")
+}
+
+model Integration {
+  id               String              @id @default(cuid())
+  organizationId   String              @map("organization_id")
+  provider         IntegrationProvider
+  status           IntegrationStatus   @default(pending)
+  lastConnectedAt  DateTime?           @map("last_connected_at")
+  lastErrorAt      DateTime?           @map("last_error_at")
+  lastErrorMessage String?             @map("last_error_message")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  organization          Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  woocommerceConnection WooCommerceConnection?
+  credentials           IntegrationCredential?
+  syncJobs              SyncJob[]
+  syncCursors           SyncCursor[]
+
+  @@index([organizationId])
+  @@index([provider])
+  @@index([status])
+  @@map("integrations")
+}
+
+model WooCommerceConnection {
+  id                 String            @id @default(cuid())
+  organizationId     String            @map("organization_id")
+  integrationId      String            @unique @map("integration_id")
+  storeUrl           String            @map("store_url")
+  storeName          String?           @map("store_name")
+  storeCurrency      String?           @map("store_currency")
+  woocommerceVersion String?           @map("woocommerce_version")
+  wordpressVersion   String?           @map("wordpress_version")
+  status             IntegrationStatus @default(pending)
+  lastValidatedAt    DateTime?         @map("last_validated_at")
+  lastSyncAt         DateTime?         @map("last_sync_at")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration  Integration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@map("woocommerce_connections")
+}
+
+model IntegrationCredential {
+  id                      String   @id @default(cuid())
+  organizationId          String   @map("organization_id")
+  integrationId           String   @unique @map("integration_id")
+  encryptedConsumerKey    String   @map("encrypted_consumer_key")
+  encryptedConsumerSecret String   @map("encrypted_consumer_secret")
+  encryptionVersion       String   @default("v1") @map("encryption_version")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration  Integration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("integration_credentials")
+}
+
+model SyncJob {
+  id             String        @id @default(cuid())
+  organizationId String        @map("organization_id")
+  integrationId  String        @map("integration_id")
+  type           SyncJobType
+  status         SyncJobStatus @default(pending)
+  startedAt      DateTime?     @map("started_at")
+  finishedAt     DateTime?     @map("finished_at")
+  errorMessage   String?       @map("error_message")
+  retryCount     Int           @default(0) @map("retry_count")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration  Integration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  logs         SyncLog[]
+
+  @@index([organizationId])
+  @@index([integrationId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("sync_jobs")
+}
+
+model SyncLog {
+  id             String            @id @default(cuid())
+  organizationId String            @map("organization_id")
+  syncJobId      String            @map("sync_job_id")
+  level          SyncLogLevel      @default(info)
+  message        String
+  resourceType   SyncResourceType? @map("resource_type")
+  externalId     String?           @map("external_id")
+  createdAt      DateTime          @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  syncJob      SyncJob      @relation(fields: [syncJobId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([syncJobId])
+  @@index([level])
+  @@index([resourceType])
+  @@index([createdAt])
+  @@map("sync_logs")
+}
+
+model SyncCursor {
+  id             String           @id @default(cuid())
+  organizationId String           @map("organization_id")
+  integrationId  String           @map("integration_id")
+  resourceType   SyncResourceType @map("resource_type")
+  cursorValue    String?          @map("cursor_value")
+  lastSyncedAt   DateTime?        @map("last_synced_at")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration  Integration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, integrationId, resourceType])
+  @@index([organizationId])
+  @@index([integrationId])
+  @@index([resourceType])
+  @@map("sync_cursors")
+}

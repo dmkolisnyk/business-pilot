@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: business_pilot_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: business_pilot
+      POSTGRES_PASSWORD: business_pilot_password
+      POSTGRES_DB: business_pilot
+    ports:
+      - "5434:5432"
+    volumes:
+      - business_pilot_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: business_pilot_redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - business_pilot_redis_data:/data
+
+volumes:
+  business_pilot_postgres_data:
+  business_pilot_redis_data:
