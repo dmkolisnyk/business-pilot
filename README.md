@@ -206,8 +206,8 @@ business-pilot/
 
 Before running the project locally, install:
 
-* Node.js 20 or newer
-* pnpm
+* Node.js 24 LTS (`24.18.0` is pinned in `.nvmrc` and `.node-version`)
+* pnpm `11.11.0` through Corepack
 * Docker Desktop
 * Git
 
@@ -223,8 +223,12 @@ cd business-pilot
 ### 2. Install dependencies
 
 ```bash
-pnpm install
+corepack enable
+pnpm install --frozen-lockfile
 ```
+
+The exact pnpm version is declared in the root `package.json`. Do not install
+dependencies with npm or Yarn and do not commit an alternative lockfile.
 
 ### 3. Configure environment variables
 

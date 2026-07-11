@@ -313,7 +313,7 @@ Initial CI/CD should use GitHub integration through hosting providers.
 Future GitHub Actions should run:
 
 ```text
-pnpm install
+pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm lint
 pnpm test

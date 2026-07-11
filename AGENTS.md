@@ -697,6 +697,9 @@ Before changing code, Codex must:
 Codex must not:
 
 - add unnecessary libraries
+- add OpenAI or Codex npm packages without explicit user approval
+- add non-workspace dependencies without exact versions
+- regenerate `pnpm-lock.yaml` with a pnpm version other than the pinned version
 - create unrelated files
 - introduce cloud services without explanation
 - rewrite project structure without clear reason
@@ -704,6 +707,8 @@ Codex must not:
 - claim tests passed unless they were actually run
 - commit changes unless explicitly requested
 - use real credentials, real secrets, or real customer data
+
+Read `docs/dependency-security.md` before adding, removing, or updating a package.
 
 ## Codex Skills Policy
 
@@ -766,6 +771,42 @@ Ask them to review the planning docs only.
 Do not modify files.
 Return conflicts, risks, missing decisions, and recommended changes.
 ```
+
+## Loop Engineering Workflow
+
+Repository-local Loop Engineering state lives in `.agent/`. Do not confuse it
+with `.agents/`, which contains reusable skills.
+
+Before implementing a loop task:
+
+1. Read `.agent/README.md`, `.agent/decisions.md`, `.agent/status.md`, and the
+   complete `.agent/tasks/BP-XXX.md` contract.
+2. Confirm that the task status is `ready`.
+3. Confirm that goal, scope, out-of-scope, acceptance criteria, verification
+   commands, risks, and stop conditions are complete.
+4. Work on one implementation task at a time unless the user explicitly approves
+   independent parallel tasks.
+5. Keep GitHub planning state and the local contract linked when identifiers are
+   available.
+
+During and after implementation:
+
+- stay inside the task contract
+- update the task implementation log and `.agent/status.md`
+- run every required verification command
+- never treat a skipped or failed check as passed
+- use at most 5 implementation iterations by default
+- stop after 2 consecutive iterations without measurable progress
+- stop when a migration, public contract change, dependency, security decision,
+  production access, or overlapping unrelated change is required outside scope
+- stop when GitHub and local task state disagree
+
+Creating or updating GitHub issues or Project items, committing, pushing, opening
+or merging pull requests, deploying, running production migrations, and changing
+production resources require explicit user authorization.
+
+Full workflow rules and status definitions are in `.agent/README.md`. Start new
+contracts from `.agent/tasks/_template.md`.
 
 ## Git Rules
 

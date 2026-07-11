@@ -17,4 +17,4 @@ async function bootstrap() {
   console.log(`Business Pilot API is running on http://localhost:${port}`);
 }
 
-bootstrap();
+void bootstrap();

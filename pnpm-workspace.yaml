@@ -2,6 +2,24 @@ packages:
   - "apps/*"
   - "packages/*"
 
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 525600
+trustLockfile: false
+blockExoticSubdeps: true
+strictPeerDependencies: true
+engineStrict: true
+nodeVersion: 24.18.0
+savePrefix: ''
+
+overrides:
+  '@hono/node-server': 1.19.13
+  js-yaml@3: 3.15.0
+  nanoid@3: 3.3.15
+  postcss: 8.5.10
+
 allowBuilds:
   '@prisma/engines': true
   prisma: true
