@@ -1,25 +1,95 @@
+name: business-pilot
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: business_pilot_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: business_pilot
-      POSTGRES_PASSWORD: business_pilot_password
-      POSTGRES_DB: business_pilot
+      POSTGRES_USER: ${POSTGRES_USER:-business_pilot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-business_pilot_password}
+      POSTGRES_DB: ${POSTGRES_DB:-business_pilot}
     ports:
-      - "5434:5432"
+      - "${POSTGRES_HOST_PORT:-5434}:5432"
     volumes:
       - business_pilot_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
     container_name: business_pilot_redis
     restart: unless-stopped
     ports:
-      - "6380:6379"
+      - "${REDIS_HOST_PORT:-6380}:6379"
     volumes:
       - business_pilot_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: business_pilot_api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-business_pilot}:${POSTGRES_PASSWORD:-business_pilot_password}@postgres:5432/${POSTGRES_DB:-business_pilot}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-business-pilot-jwt-secret-change-later}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:-docker-dev-business-pilot-encryption-key-change-later-32}
+      WOOCOMMERCE_WEBHOOK_SECRET: ${WOOCOMMERCE_WEBHOOK_SECRET:-docker-dev-woocommerce-webhook-secret}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      EMAIL_PROVIDER_API_KEY: ${EMAIL_PROVIDER_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@businesspilot.local}
+    ports:
+      - "${API_HOST_PORT:-4000}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/health').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1));"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    container_name: business_pilot_web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    ports:
+      - "${WEB_HOST_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1));"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
 volumes:
   business_pilot_postgres_data:

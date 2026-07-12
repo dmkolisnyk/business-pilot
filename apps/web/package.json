@@ -1,11 +1,11 @@
 {
-  "name": "web",
+  "name": "@business-pilot/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
@@ -24,5 +24,6 @@
     "eslint-config-next": "16.2.10",
     "tailwindcss": "4.3.2",
     "typescript": "5.9.3"
-  }
+  },
+  "license": "MIT"
 }
