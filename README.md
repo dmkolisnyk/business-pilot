@@ -216,7 +216,7 @@ Before running the project locally, install:
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/dmkolisnyk/business-pilot.git
 cd business-pilot
 ```
 
@@ -243,31 +243,55 @@ Review the generated files and replace placeholder values where necessary.
 
 Never commit real credentials or secrets.
 
-### 4. Start PostgreSQL and Redis
+### 4. Start the complete Docker stack
 
-```bash
-docker compose up -d
+Optionally copy the Docker environment template:
+
+```powershell
+Copy-Item .env.docker.example .env
 ```
 
-Check the running containers:
+Build and start the frontend, API, PostgreSQL, and Redis:
 
 ```bash
-docker compose ps
+pnpm docker:up
 ```
 
-### 5. Generate the Prisma client
+Check container health:
+
+```bash
+pnpm docker:ps
+```
+
+Follow logs:
+
+```bash
+pnpm docker:logs
+```
+
+Run the complete PowerShell smoke test:
+
+```powershell
+./scripts/docker/smoke-test.ps1
+```
+
+### 5. Host-based development (optional)
+
+The Docker API container generates Prisma Client during image build and applies the current development schema with `prisma db push` during startup. The build uses a non-secret placeholder database URL only because Prisma 7 loads `prisma.config.ts` while generating the client; runtime connections always use the Compose `DATABASE_URL`. For host-based development, generate the client manually.
+
+### 6. Generate the Prisma client
 
 ```bash
 pnpm --filter ./apps/api prisma:generate
 ```
 
-### 6. Apply database migrations
+### 7. Apply database migrations
 
 ```bash
 pnpm --filter ./apps/api prisma:migrate -- --name init_foundation
 ```
 
-### 7. Start the applications
+### 8. Start the applications on the host
 
 Run the frontend and backend together:
 
@@ -496,6 +520,22 @@ The following are intentionally outside the initial MVP:
 * [ ] Add customer segments
 * [ ] Add email campaign drafts
 * [ ] Add competitor tracking
+
+## Codex Agents and Skills
+
+Repository-scoped skills live in `.agents/skills/`, and project-scoped custom subagents live in `.codex/agents/`. Agent concurrency limits are defined in `.codex/config.toml`.
+
+Launch Codex from the repository root and run `/skills` to verify that all repository skills are discovered. See `.agents/README.md` and `.codex/README.md` for the complete lists. Run `pnpm agents:validate` to validate all skill metadata, custom agent definitions, and global agent limits without installing any additional package.
+
+## GitHub Repository and Project
+
+The repository is `dmkolisnyk/business-pilot`. To find or create the `Business Pilot MVP` GitHub Project, link it to the repository, and create the agent workflow fields, run the PowerShell setup script with the official GitHub CLI:
+
+```powershell
+./scripts/github/setup-project.ps1
+```
+
+See `docs/github-project.md` for prerequisites and behavior.
 
 ## Contributing
 
