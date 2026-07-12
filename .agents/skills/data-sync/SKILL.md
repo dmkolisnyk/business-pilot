@@ -1,3 +1,8 @@
+---
+name: data-sync
+description: Use for background synchronization, BullMQ jobs, retries, cursors, idempotency, partial failures, and analytics recalculation workflows.
+---
+
 # Data Sync Skill
 
 Use this skill for background jobs, WooCommerce initial sync, incremental sync, analytics recalculation, and job status design.

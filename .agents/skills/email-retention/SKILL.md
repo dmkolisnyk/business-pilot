@@ -1,3 +1,8 @@
+---
+name: email-retention
+description: Use for behavioral customer segments and retention, win-back, upsell, or cross-sell email campaign drafts; not for automatic sending.
+---
+
 # Email Retention Skill
 
 Use this skill for customer segments and email campaign drafts for winback, upsell, cross-sell, and repeat purchase workflows.

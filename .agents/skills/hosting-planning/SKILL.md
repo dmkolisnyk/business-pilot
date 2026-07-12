@@ -1,3 +1,8 @@
+---
+name: hosting-planning
+description: Use for local, staging, or production hosting, Docker, deployment, environment variables, backups, monitoring, and scaling plans.
+---
+
 # Hosting Planning Skill
 
 Use this skill for local, staging, and production hosting plans for Business Pilot.

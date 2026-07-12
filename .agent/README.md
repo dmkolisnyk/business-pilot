@@ -17,8 +17,7 @@ verify, and prepare a change, but external actions remain human-controlled.
 | Architecture and workflow decisions | `.agent/decisions.md` |
 | Local backlog mirror | `.agent/todo.md` |
 
-The GitHub Project is not connected yet. Until its repository, project URL, and
-status fields are configured, `.agent/todo.md` is maintained manually.
+The GitHub repository is `dmkolisnyk/business-pilot`. The account-level GitHub Project is prepared through `scripts/github/setup-project.ps1`. Until that script is run and the project fields are confirmed, `.agent/todo.md` remains a manual mirror.
 
 If a GitHub item and its local task contract disagree, stop. Do not choose one
 silently. Record the conflict as a blocker and ask for human direction.
@@ -59,8 +58,7 @@ Suggested GitHub Project status mapping:
 | `completed` | Done |
 | `cancelled` | Cancelled |
 
-The actual field names must be confirmed against the existing GitHub Project
-before any synchronization is enabled.
+The setup script creates a dedicated `Agent Status` field with these exact values. Synchronization must target `Agent Status`, not GitHub's default `Status` field.
 
 ## Controlled loop
 

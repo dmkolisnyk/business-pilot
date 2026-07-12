@@ -1,3 +1,8 @@
+---
+name: ai-recommendations
+description: Use for AI business reports, recommendation inputs, recommendation quality, evidence, confidence, and data-limitation handling.
+---
+
 # AI Recommendations Skill
 
 Use this skill for AI business reports, recommendation generation, prompt inputs, and recommendation quality review.

@@ -1,3 +1,8 @@
+---
+name: nextjs-frontend
+description: Use for Next.js pages, React components, SaaS user flows, forms, API clients, and loading, error, or empty states.
+---
+
 # NextJS Frontend Skill
 
 Use this skill for frontend structure, SaaS UX, pages, components, forms, and API client planning.

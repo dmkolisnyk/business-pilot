@@ -1,3 +1,8 @@
+---
+name: ecommerce-analytics
+description: Use when defining ecommerce metrics, dashboard calculations, analytics snapshots, reports, or the business actions supported by metrics.
+---
+
 # Ecommerce Analytics Skill
 
 Use this skill when defining metrics, dashboards, analytics snapshots, or business reports.

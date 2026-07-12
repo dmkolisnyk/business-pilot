@@ -596,9 +596,10 @@ Local development:
 
 - Next.js runs on `http://localhost:3000`.
 - NestJS API runs on `http://localhost:4000`.
-- PostgreSQL should run in Docker later.
-- Redis should run in Docker later.
-- Worker should run as a separate process later.
+- The complete development stack can run through Docker Compose: web, API, PostgreSQL, and Redis.
+- PostgreSQL is exposed on host port `5434` by default.
+- Redis is exposed on host port `6380` by default.
+- A separate worker service should be added when BullMQ job processors are implemented.
 
 MVP production target:
 
@@ -735,7 +736,7 @@ security-review
 repo-review
 ```
 
-Each skill must include a `SKILL.md`.
+Each skill must include a `SKILL.md` with YAML frontmatter containing a unique `name` and a concise trigger-focused `description`.
 
 Create a skill only for repeatable workflows or important domain rules.
 

@@ -1,3 +1,8 @@
+---
+name: woocommerce-integration
+description: Use for WooCommerce REST API connections, credentials, validation, synchronization, pagination, idempotency, or webhook planning.
+---
+
 # WooCommerce Integration Skill
 
 Use this skill for WooCommerce connection, credential validation, REST API access, sync planning, and webhook planning.

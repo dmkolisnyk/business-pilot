@@ -1,3 +1,8 @@
+---
+name: database-design
+description: Use for PostgreSQL and Prisma schema design, migrations, relations, indexes, multi-tenancy, retention, and sensitive-data modeling.
+---
+
 # Database Design Skill
 
 Use this skill for PostgreSQL, Prisma schema planning, migrations, indexes, and multi-tenant data modeling.

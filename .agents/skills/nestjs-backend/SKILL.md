@@ -1,3 +1,8 @@
+---
+name: nestjs-backend
+description: Use for NestJS modules, controllers, services, DTOs, Prisma access, queues, API boundaries, and backend test planning.
+---
+
 # NestJS Backend Skill
 
 Use this skill for backend architecture, modules, controllers, services, DTOs, tests, and API boundaries.

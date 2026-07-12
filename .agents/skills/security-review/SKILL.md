@@ -1,3 +1,8 @@
+---
+name: security-review
+description: Use to review authentication, authorization, tenant isolation, secrets, WooCommerce credentials, webhooks, CORS, logs, and sensitive data.
+---
+
 # Security Review Skill
 
 Use this skill to review authentication, authorization, integrations, secrets, data handling, and tenant isolation.

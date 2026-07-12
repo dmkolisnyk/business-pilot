@@ -1,3 +1,8 @@
+---
+name: business-pilot-product
+description: Use when defining Business Pilot product scope, MVP boundaries, user flows, or business value; do not use for implementation-only tasks.
+---
+
 # Business Pilot Product Skill
 
 Use this skill when shaping product scope, MVP decisions, or feature behavior for Business Pilot.

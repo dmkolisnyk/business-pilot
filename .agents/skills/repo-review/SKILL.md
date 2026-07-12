@@ -1,3 +1,8 @@
+---
+name: repo-review
+description: Use for repository structure, scripts, documentation, environment examples, dependency hygiene, Codex configuration, and readiness reviews.
+---
+
 # Repository Review Skill
 
 Use this skill for repository hygiene, structure review, contributor workflow review, and readiness checks.
