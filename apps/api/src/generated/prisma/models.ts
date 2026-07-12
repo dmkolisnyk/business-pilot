@@ -8,13 +8,13 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User.js'
-export type * from './models/Organization.js'
-export type * from './models/OrganizationMember.js'
-export type * from './models/Integration.js'
-export type * from './models/WooCommerceConnection.js'
-export type * from './models/IntegrationCredential.js'
-export type * from './models/SyncJob.js'
-export type * from './models/SyncLog.js'
-export type * from './models/SyncCursor.js'
-export type * from './commonInputTypes.js'
+export type * from './models/User.ts'
+export type * from './models/Organization.ts'
+export type * from './models/OrganizationMember.ts'
+export type * from './models/Integration.ts'
+export type * from './models/WooCommerceConnection.ts'
+export type * from './models/IntegrationCredential.ts'
+export type * from './models/SyncJob.ts'
+export type * from './models/SyncLog.ts'
+export type * from './models/SyncCursor.ts'
+export type * from './commonInputTypes.ts'
