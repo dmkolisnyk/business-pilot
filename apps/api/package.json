@@ -27,7 +27,7 @@
     "prisma:reset": "prisma migrate reset",
     "prisma:push": "prisma db push",
     "prisma:deploy": "prisma migrate deploy",
-    "start:docker": "prisma db push && node dist/src/main.js"
+    "start:docker": "node dist/main.js"
   },
   "dependencies": {
     "@business-pilot/shared": "workspace:*",
