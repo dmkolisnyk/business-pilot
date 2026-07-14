@@ -1,11 +1,9 @@
-FROM node:24.18.0-bookworm-slim AS base
+FROM node:24.18.0-alpine AS base
 
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends openssl ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache openssl ca-certificates
 
 RUN corepack enable && corepack prepare pnpm@11.11.0 --activate
 

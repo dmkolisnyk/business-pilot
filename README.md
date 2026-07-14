@@ -277,7 +277,17 @@ Run the complete PowerShell smoke test:
 
 ### 5. Host-based development (optional)
 
-The Docker API container generates Prisma Client during image build and applies the current development schema with `prisma db push` during startup. The build uses a non-secret placeholder database URL only because Prisma 7 loads `prisma.config.ts` while generating the client; runtime connections always use the Compose `DATABASE_URL`. For host-based development, generate the client manually.
+The Docker API image generates Prisma Client during the image build. Container startup never runs `prisma db push`, migrations, or database resets automatically. Database schema changes remain an explicit developer operation. The build uses a non-secret placeholder database URL only because Prisma 7 loads `prisma.config.ts` while generating the client; runtime connections always use the Compose `DATABASE_URL`.
+
+PostgreSQL and Redis are published only on the host loopback interface by default (`127.0.0.1:5434` and `127.0.0.1:6380`). They are not exposed on other network interfaces.
+
+For a brand-new local PostgreSQL volume, initialize the current development schema once, explicitly:
+
+```bash
+docker compose exec api pnpm --filter ./apps/api prisma:push
+```
+
+This command is for local development only. It is never executed automatically by container startup, and it must not replace reviewed migrations in staging or production.
 
 ### 6. Generate the Prisma client
 
