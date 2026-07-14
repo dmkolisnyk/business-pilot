@@ -6,9 +6,11 @@ import { AppModule } from './../src/app.module';
 import { PrismaService } from './../src/prisma/prisma.service';
 
 describe('AppController (e2e)', () => {
+  const originalJwtSecret = process.env.JWT_SECRET;
   let app: INestApplication<App>;
 
   beforeEach(async () => {
+    process.env.JWT_SECRET = 'test-only-jwt-secret-with-at-least-32-bytes';
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
@@ -30,5 +32,13 @@ describe('AppController (e2e)', () => {
 
   afterEach(async () => {
     await app.close();
+  });
+
+  afterAll(() => {
+    if (originalJwtSecret === undefined) {
+      delete process.env.JWT_SECRET;
+    } else {
+      process.env.JWT_SECRET = originalJwtSecret;
+    }
   });
 });
